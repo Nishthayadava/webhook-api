@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,7 +14,16 @@ app.use(bodyParser.json());
 // Temporary storage for webhook data
 let webhookData = [];
 
-// Endpoint to receive the first webhook (Form submission + Mail sent)
+// Create HTTP server and Socket.IO server
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: '*', // Adjust the origin as per your frontend
+        methods: ['GET', 'POST']
+    }
+});
+
+// Endpoint to receive the first webhook
 app.post('/webhook/first', (req, res) => {
     console.log('First Webhook received:', req.body);
 
@@ -37,16 +48,19 @@ app.post('/webhook/first', (req, res) => {
     res.status(200).send('First Webhook received');
 });
 
-// Endpoint to receive the second webhook (Confirmation email sent)
+// Endpoint to receive the second webhook
 app.post('/webhook/second', (req, res) => {
     console.log('Second Webhook received:', req.body);
 
-    const email = req.body['']; // Extract email from the second webhook data (as per your example)
+    const email = req.body['']; // Extract email from the second webhook data
 
     // Find the entry that matches the email and update the status
     const entry = webhookData.find(item => item.email === email);
     if (entry) {
-        entry.secondConfirmationSent = true; // Update status to "Received"
+        entry.secondConfirmationSent = true; // Update status to "Agreed"
+
+        // Emit real-time updates to the frontend via WebSocket
+        io.emit('update', webhookData);
     }
 
     res.status(200).send('Second Webhook received and status updated');
@@ -58,6 +72,6 @@ app.get('/webhook-data', (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
