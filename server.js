@@ -19,6 +19,12 @@ app.use(bodyParser.json());
 // In-memory storage for webhook data
 let webhookData = [];
 
+// Endpoint to fetch the current webhook data
+app.get('/api/webhook-data', (req, res) => {
+    res.json(webhookData);  // Return the stored webhook data
+    console.log('Sending current webhook data');
+});
+
 // Handle the first webhook
 app.post('/webhook/first', (req, res) => {
     try {
