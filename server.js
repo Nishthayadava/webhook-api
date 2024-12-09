@@ -4,7 +4,7 @@ const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const { Pool } = require('pg');  // Import pg module
+const { Pool } = require('pg');
 
 
 const app = express();
@@ -23,14 +23,14 @@ app.use(bodyParser.json());
 let webhookData = [];
 
 
-const pool = new Pool({
-    user: 'dbforme_user',          // Replace with your PostgreSQL username
-    host: 'dpg-ct51dgalqhvc73a6dsb0-a',             // Replace with your PostgreSQL host (use localhost if running locally)
-    database: 'dbforme',      // Replace with your database name
-    password: 'eryWjNApbGNFWv33BCB6woCOD7wGgrds',  // Replace with your database password
-    port: 5432,                    // Default PostgreSQL port
-});
 
+const pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+});
 
 // Endpoint to fetch the current webhook data
 app.get('/api/webhook-data', async (req, res) => {
