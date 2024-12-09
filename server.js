@@ -4,6 +4,7 @@ const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const { Pool } = require('pg');  // Import pg module
 
 
 const app = express();
