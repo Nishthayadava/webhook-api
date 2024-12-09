@@ -88,7 +88,7 @@ app.post('/webhook/second', async (req, res) => {
         //         : entry
         // );
 
-        io.emit('update', webhookData);
+        // io.emit('update', webhookData);
         console.log('Second webhook data processed for email:', email);
         res.status(200).send('Second webhook received.');
     } catch (error) {
