@@ -32,7 +32,7 @@ const pool = new Pool({
 
 
 // Endpoint to fetch the current webhook data
-app.get('/api/webhook-data', (req, res) => {
+app.get('/api/webhook-data', async (req, res) => {
     const result = await pool.query('SELECT * FROM webhook_data');
     res.json(result.rows);  // Return the stored webhook data from the database
     console.log('Sending current webhook data');
@@ -42,7 +42,7 @@ app.get('/api/webhook-data', (req, res) => {
 });
 
 // Handle the first webhook
-app.post('/webhook/first', (req, res) => {
+app.post('/webhook/first', async (req, res) => {
     try {
         const rawData = req.body[''];
         const [name, email, phone] = rawData.split(',').map((item) => item.trim());
@@ -69,7 +69,7 @@ app.post('/webhook/first', (req, res) => {
 });
 
 // Handle the second webhook
-app.post('/webhook/second', (req, res) => {
+app.post('/webhook/second', async (req, res) => {
     try {
         const email = req.body[''];
 
